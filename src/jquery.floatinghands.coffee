@@ -4,44 +4,37 @@
 
 # define the wrapper function for jQuery
 (($) ->
-  image_loaded = (event) ->
+  image_loaded = (stage, element) -> (event) ->
 	  image = event.target
-	  background = new Bitmap(image)
-	  background.x = 0
-	  background.y = 0
-	  background.rotation = 360
-	  background.regX = 100
-	  background.regY = 50
-	  background.scaleX = background.scaleY = background.scale = 1
+	  bitmap = new Bitmap(image)
+	  delete element.image
+	  # apply all options that were passed
+	  bitmap[key] = value for own key, value of element
+	  # put the object on the stage, thus making it visible
+	  stage.addChild bitmap
 
-	  container = new Container()
-	  stage = $("canvas").data("stage")
-	  console.log stage
-	  console.log background
-	  stage.addChild container
-	  container.addChild background
+  initialize = (stage) -> (element) ->
+	  image = new Image()
+	  image.src = element.image
+	  image.onload = image_loaded(stage, element)
 
   # define the plugin callback for jQuery
-  jQuery.fn.floatinghands = () ->
+  jQuery.fn.floatinghands = (elements) ->
     # this is aliased to the DOM element that we hopefully got called upon
     widget = this[0]
     stage = new Stage(widget)
-    stage.autoClear = false
-    $(widget).data('stage', stage)
 
-    background_image = new Image()
-    background_image.src = "case.png"
-    #background_image.onload = image_loaded
+    # add all images to the stage
+    init = initialize stage
+    init element for element in elements
 
-    text = new Text("bla", "serif", "black")
-    text.x = 100
-    text.y = 50
-    stage.addChild text
-
+    # create an object so addListener has something to call on.
     listener =
-	    tick: stage.update
+	    tick: () ->
+		    stage.update()
 
     Ticker.addListener listener
 
-    return undefined
+    # return 'this' so the plugin call can be chained
+    this
 )(jQuery)
