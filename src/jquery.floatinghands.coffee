@@ -26,8 +26,10 @@
 	    # hardcoded
 	    bitmap.timeFn = now
 	    delete element.fn
-	    # hardcoded
-	    setInterval(onUpdate(bitmap), 1000)
+	    # add the bitmap to the Ticker so it recalculates every tick
+	    recalculateRotation =
+	      tick: onUpdate(bitmap)
+	    Ticker.addListener recalculateRotation
 
 	  # apply all options that were passed
 	  bitmap[key] = value for own key, value of element
@@ -51,9 +53,11 @@
 
     # create an object so addListener has something to call on.
     listener =
-	    tick: () ->
-		    stage.update()
+      tick: () ->
+        stage.update()
 
+    # adjust ticks / FPS at will
+    Ticker.setInterval 1000
     Ticker.addListener listener
 
     # return 'this' so the plugin call can be chained
