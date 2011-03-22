@@ -4,10 +4,31 @@
 
 # define the wrapper function for jQuery
 (($) ->
-  image_loaded = (stage, element) -> (event) ->
+  # function that gets called to update the bitmap every n milliseconds
+  onUpdate = (bitmap) -> () ->
+	  # calculate the degree by passing the function to the degree calculator
+	  # function and set this degree
+	  bitmap.rotation = bitmap.updateFn(bitmap.timeFn)
+	  # return `true` so it will be called again
+	  true
+
+  # TODO find a better way to solve this
+  now = () ->
+	  new Date
+
+  imageLoaded = (stage, element) -> (event) ->
 	  image = event.target
 	  bitmap = new Bitmap(image)
 	  delete element.image
+
+	  if element.fn?
+	    bitmap.updateFn = element.fn
+	    # hardcoded
+	    bitmap.timeFn = now
+	    delete element.fn
+	    # hardcoded
+	    setInterval(onUpdate(bitmap), 1000)
+
 	  # apply all options that were passed
 	  bitmap[key] = value for own key, value of element
 	  # put the object on the stage, thus making it visible
@@ -16,7 +37,7 @@
   initialize = (stage) -> (element) ->
 	  image = new Image()
 	  image.src = element.image
-	  image.onload = image_loaded(stage, element)
+	  image.onload = imageLoaded(stage, element)
 
   # define the plugin callback for jQuery
   jQuery.fn.floatinghands = (elements) ->

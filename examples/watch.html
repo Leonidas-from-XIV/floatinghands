@@ -7,7 +7,29 @@
     <script type="text/javascript" src="../lib/jquery.floatinghands.js"></script>
     <script type="text/javascript">
     $(function () {
-      $("#widget").floatinghands([{image: "case.png", rotation: 15}]);
+      hourly = function (timeFn) {
+        now = timeFn();
+        hour = now.getHours() % 12;
+        return hour / 12 * 360;
+      };
+      minutely = function (timeFn) {
+        now = timeFn();
+        second = now.getMinutes();
+        return second / 60 * 360;
+      };
+      secondly = function (timeFn) {
+        now = timeFn();
+        second = now.getSeconds();
+        return second / 60 * 360;
+      };
+      $("#widget").floatinghands([
+        {image: "case.png"},
+        {image: "date_disk.png"},
+        {image: "dial.png"},
+        {image: "hour.png", x: 142, y: 213, regX: 142, regY: 213, fn: hourly},
+        {image: "min.png", x: 142, y: 213, regX: 142, regY: 213, fn: minutely},
+        {image: "sec.png", x: 103, y: 213, regX: 103, regY: 213, fn: secondly}
+       ]);
     });
     </script>
   </head>
