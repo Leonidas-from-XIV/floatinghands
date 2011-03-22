@@ -7,6 +7,12 @@
     <script type="text/javascript" src="../lib/jquery.floatinghands.js"></script>
     <script type="text/javascript">
     $(function () {
+      daily = function (timeFn) {
+        now = timeFn();
+        day = now.getDate();
+        dayAngle = 360 / 31;
+        return day * dayAngle;
+      };
       hourly = function (timeFn) {
         now = timeFn();
         hour = now.getHours() % 12;
@@ -24,11 +30,11 @@
       };
       $("#widget").floatinghands([
         {image: "case.png"},
-        {image: "date_disk.png"},
+        {image: "date_disk.png", x: 142, y: 213, regX: 142, regY: 213, fn: daily},
         {image: "dial.png"},
         {image: "hour.png", x: 142, y: 213, regX: 142, regY: 213, fn: hourly},
         {image: "min.png", x: 142, y: 213, regX: 142, regY: 213, fn: minutely},
-        {image: "sec.png", x: 103, y: 213, regX: 103, regY: 213, fn: secondly}
+        {image: "sec.png", x: 103, y: 213, regX: 103, regY: 213, fn: secondly},
        ]);
     });
     </script>
