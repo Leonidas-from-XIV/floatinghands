@@ -29,12 +29,12 @@
         return second / 60 * 360;
       };
       $("#widget").floatinghands([
-        {image: "case.png"},
-        {image: "date_disk.png", x: 142, y: 213, regX: 142, regY: 213, fn: daily},
-        {image: "dial.png"},
-        {image: "hour.png", x: 142, y: 213, regX: 142, regY: 213, fn: hourly},
-        {image: "min.png", x: 142, y: 213, regX: 142, regY: 213, fn: minutely},
-        {image: "sec.png", x: 103, y: 213, regX: 103, regY: 213, fn: secondly},
+        {image: "case.png", z: 10},
+        {image: "date_disk.png", z: 9, x: 142, y: 213, regX: 142, regY: 213, fn: daily},
+        {image: "dial.png", z: 8},
+        {image: "hour.png", z: 7, x: 142, y: 213, regX: 142, regY: 213, fn: hourly},
+        {image: "min.png", z: 7, x: 142, y: 213, regX: 142, regY: 213, fn: minutely},
+        {image: "sec.png", z: 7, x: 103, y: 213, regX: 103, regY: 213, fn: secondly},
        ]);
     });
     </script>
