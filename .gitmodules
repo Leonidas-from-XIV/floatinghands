@@ -1,0 +1,3 @@
+[submodule "lib/EaselJS"]
+	path = lib/EaselJS
+	url = git://github.com/gskinner/EaselJS.git
