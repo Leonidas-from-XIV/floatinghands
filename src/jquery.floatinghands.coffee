@@ -50,13 +50,37 @@
     # will be determined by the time the image is loaded
     stage.sortChildren sortByZ
 
+  pusherLoaded = (stage, pusher) -> (event) ->
+    image = event.target
+    bitmap = new Bitmap(image)
+
+    if !pusher.z?
+      # Z is default to 10, so it stays in the back
+      pusher.z = 10
+
+    bitmap[key] = value for own key, value of pusher
+    stage.addChild bitmap
+    stage.sortChildren sortByZ
+
   initialize = (stage, onLoad) -> (element) ->
-    image = new Image()
-    image.src = element.image
-    image.onload = onLoad(stage, element)
+    images = []
+    if element.image?
+      image = new Image
+      image.src = element.image
+      images.push image
+    if element.normal?
+      image = new Image
+      image.src = element.normal
+      images.push image
+    if element.pushed?
+      image = new Image
+      image.src = element.pushed
+      images.push image
+
+    e.onload = onLoad(stage, element) for e in images
 
   # define the plugin callback for jQuery
-  jQuery.fn.floatinghands = (layers, buttons) ->
+  jQuery.fn.floatinghands = (layers, pusher) ->
     # this is aliased to the DOM element that we hopefully got called upon
     widget = this[0]
     stage = new Stage(widget)
@@ -66,13 +90,15 @@
       mouseY = event.clientY
       # beware, this only works non-locally
       item = stage.getObjectUnderPoint(mouseX, mouseY)
+      console.log mouseX, mouseY
       if item?
-        #console.log item
-        alert item
+        console.log item
 
     # add all images to the stage
     initLayer = initialize stage, layerLoaded
     initLayer element for element in layers
+    initPusher = initialize stage, pusherLoaded
+    initPusher element for element in pusher
 
     # create an object so addListener has something to call on.
     listener =
