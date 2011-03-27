@@ -21,47 +21,58 @@
   now = () ->
     new Date
 
-  imageLoaded = (stage, element) -> (event) ->
+  layerLoaded = (stage, layer) -> (event) ->
     image = event.target
     bitmap = new Bitmap(image)
-    delete element.image
+    delete layer.image
 
-    if !element.z?
+    if !layer.z?
       # Z is default to 10, so it stays in the back
-      element.z = 10
+      layer.z = 10
 
-    if element.fn?
-      bitmap.updateFn = element.fn
+    if layer.fn?
+      bitmap.updateFn = layer.fn
       # hardcoded
       bitmap.timeFn = now
-      delete element.fn
+      delete layer.fn
       # add the bitmap to the Ticker so it recalculates every tick
       recalculateRotation =
         tick: onUpdate(bitmap)
       Ticker.addListener recalculateRotation
 
     # apply all options that were passed
-    bitmap[key] = value for own key, value of element
+    bitmap[key] = value for own key, value of layer
+    # deactivate mouse events on layers, because they are not clickable
+    bitmap.mouseEnabled = false
     # put the object on the stage, thus making it visible
     stage.addChild bitmap
     # sort the list of children by the Z index, otherwise the order
     # will be determined by the time the image is loaded
     stage.sortChildren sortByZ
 
-  initialize = (stage) -> (element) ->
+  initialize = (stage, onLoad) -> (element) ->
     image = new Image()
     image.src = element.image
-    image.onload = imageLoaded(stage, element)
+    image.onload = onLoad(stage, element)
 
   # define the plugin callback for jQuery
-  jQuery.fn.floatinghands = (elements) ->
+  jQuery.fn.floatinghands = (layers, buttons) ->
     # this is aliased to the DOM element that we hopefully got called upon
     widget = this[0]
     stage = new Stage(widget)
 
+    $(widget).click (event) ->
+      mouseX = event.clientX
+      mouseY = event.clientY
+      # beware, this only works non-locally
+      item = stage.getObjectUnderPoint(mouseX, mouseY)
+      if item?
+        #console.log item
+        alert item
+
     # add all images to the stage
-    init = initialize stage
-    init element for element in elements
+    initLayer = initialize stage, layerLoaded
+    initLayer element for element in layers
 
     # create an object so addListener has something to call on.
     listener =
