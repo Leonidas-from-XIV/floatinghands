@@ -21,7 +21,7 @@
   now = () ->
     new Date
 
-  layerLoaded = (stage, layer) -> (event) ->
+  layerLoaded = (stage, layer, hotspots) -> (event) ->
     image = event.target
     bitmap = new Bitmap(image)
     delete layer.image
@@ -50,7 +50,7 @@
     # will be determined by the time the image is loaded
     stage.sortChildren sortByZ
 
-  pusherLoaded = (stage, pusher) -> (event) ->
+  pusherLoaded = (stage, pusher, hotspots) -> (event) ->
     image = event.target
     bitmap = new Bitmap(image)
 
@@ -58,11 +58,15 @@
       # Z is default to 10, so it stays in the back
       pusher.z = 10
 
+    if pusher.hotspot?
+      hotspots[pusher.hotspot] = bitmap
+      delete pusher.hotspot
+
     bitmap[key] = value for own key, value of pusher
     stage.addChild bitmap
     stage.sortChildren sortByZ
 
-  initialize = (stage, onLoad) -> (element) ->
+  initialize = (stage, onLoad, hotspots) -> (element) ->
     images = []
     if element.image?
       image = new Image
@@ -77,7 +81,15 @@
       image.src = element.pushed
       images.push image
 
-    e.onload = onLoad(stage, element) for e in images
+    e.onload = onLoad(stage, element, hotspots) for e in images
+
+  objectOnPoint = (hotspots, x, y) ->
+    for key, obj of hotspots
+      # need to convert these out of a string, because JS dictionaries are a joke
+      [x1, y1, x2, y2] = (parseInt(n, 10) for n in key.split(','))
+
+      if x1 <= x <= x2 and y1 <= y <= y2
+        return obj
 
   # define the plugin callback for jQuery
   jQuery.fn.floatinghands = (layers, pusher) ->
@@ -85,19 +97,32 @@
     widget = this[0]
     stage = new Stage(widget)
 
+    hotspots = {}
+
     $(widget).click (event) ->
       mouseX = event.clientX
       mouseY = event.clientY
-      # beware, this only works non-locally
-      item = stage.getObjectUnderPoint(mouseX, mouseY)
-      console.log mouseX, mouseY
+
+      item = objectOnPoint(hotspots, mouseX, mouseY)
+      #console.log mouseX, mouseY
+      #console.log hotspots
+      #if item?
+      #  console.log item
+
+    $(widget).mousemove (event) ->
+      mouseX = event.clientX
+      mouseY = event.clientY
+
+      item = objectOnPoint(hotspots, mouseX, mouseY)
+      style = 'auto'
       if item?
-        console.log item
+        style = 'pointer'
+      $(this).css('cursor', style)
 
     # add all images to the stage
-    initLayer = initialize stage, layerLoaded
+    initLayer = initialize stage, layerLoaded, hotspots
     initLayer element for element in layers
-    initPusher = initialize stage, pusherLoaded
+    initPusher = initialize stage, pusherLoaded, hotspots
     initPusher element for element in pusher
 
     # create an object so addListener has something to call on.
