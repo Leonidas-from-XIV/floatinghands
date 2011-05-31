@@ -104,10 +104,17 @@
       mouseY = event.clientY
 
       item = objectOnPoint(hotspots, mouseX, mouseY)
-      #console.log mouseX, mouseY
-      #console.log hotspots
-      #if item?
-      #  console.log item
+      if item?
+        # make the upper layer invisible
+        item.visible = false
+        # re-display stage immediately
+        stage.update()
+
+        # schedule the visible-making
+        setTimeout(() ->
+          item.visible = true
+          stage.update()
+        50)
 
     $(widget).mousemove (event) ->
       mouseX = event.clientX
