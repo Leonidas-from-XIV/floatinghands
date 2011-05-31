@@ -112,6 +112,7 @@
     $(widget).mousemove (event) ->
       mouseX = event.clientX
       mouseY = event.clientY
+      #console.log mouseX, mouseY
 
       item = objectOnPoint(hotspots, mouseX, mouseY)
       style = 'auto'
