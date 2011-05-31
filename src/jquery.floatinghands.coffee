@@ -93,8 +93,18 @@
 
   # define the plugin callback for jQuery
   jQuery.fn.floatinghands = (layers, pusher) ->
-    # this is aliased to the DOM element that we hopefully got called upon
-    widget = this[0]
+    # TODO: feature-probe for canvas
+
+    # get the <img> and harvest it for width and height and replace by canvas
+    candidate = $(this[0])
+    width = candidate.attr 'width'
+    height = candidate.attr 'height'
+    canvas = $('<canvas>').attr('width', width).attr('height', height)
+    console.log canvas
+    candidate.replaceWith canvas
+    widget = canvas[0]
+
+    # we got a canvas, start initialization
     stage = new Stage(widget)
 
     hotspots = {}
