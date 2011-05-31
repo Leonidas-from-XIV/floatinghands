@@ -102,7 +102,6 @@
     width = candidate.attr 'width'
     height = candidate.attr 'height'
     canvas = $('<canvas>').attr('width', width).attr('height', height)
-    console.log canvas
     candidate.replaceWith canvas
     widget = canvas[0]
 
