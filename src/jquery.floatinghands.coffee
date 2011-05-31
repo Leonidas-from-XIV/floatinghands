@@ -93,7 +93,9 @@
 
   # define the plugin callback for jQuery
   jQuery.fn.floatinghands = (layers, pusher) ->
-    # TODO: feature-probe for canvas
+    # bail out early if the browser does not support canvas
+    if !Modernizr.canvas
+      return this
 
     # get the <img> and harvest it for width and height and replace by canvas
     candidate = $(this[0])
