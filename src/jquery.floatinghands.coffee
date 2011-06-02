@@ -5,7 +5,8 @@
 # define the wrapper function for jQuery
 (($) ->
   # function that gets called to update the bitmap every n milliseconds
-  onUpdate = (bitmap) -> () ->
+  # yes, this is a curried function returning a unary function
+  onUpdate = (bitmap) -> ->
     # calculate the degree by passing the function to the degree calculator
     # function and set this degree
     bitmap.rotation = bitmap.updateFn(bitmap.timeFn)
@@ -18,7 +19,7 @@
     second.z - first.z
 
   # TODO find a better way to solve this
-  now = () ->
+  now = ->
     new Date
 
   layerLoaded = (stage, layer, hotspots) -> (event) ->
@@ -93,12 +94,9 @@
 
   # define the plugin callback for jQuery
   jQuery.fn.floatinghands = ->
-    console.log this
     attach: => attach.apply(this, arguments)
 
   attach = (layers, pusher) ->
-    console.log this
-
     # bail out early if the browser does not support canvas
     if !Modernizr.canvas
       return this
