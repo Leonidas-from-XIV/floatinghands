@@ -92,9 +92,19 @@
       if x1 <= x <= x2 and y1 <= y <= y2
         return obj
 
+  class Pusher
+    constructor: ->
+      @running = false
+      @freezed = false
+    toggleFreeze: ->
+      console.log "toggling freeze"
+    toggleRun: ->
+      console.log "toggling run"
+
   # define the plugin callback for jQuery
   jQuery.fn.floatinghands = ->
     attach: => attach.apply(this, arguments)
+    Pusher: Pusher
 
   attach = (layers, pusher) ->
     # bail out early if the browser does not support canvas
@@ -122,6 +132,8 @@
       if item?
         # make the upper layer invisible
         item.visible = false
+        # call callback if defined
+        item.pushed?()
         # re-display stage immediately
         stage.update()
 

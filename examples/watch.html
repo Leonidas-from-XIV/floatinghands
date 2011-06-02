@@ -8,27 +8,29 @@
     <script type="text/javascript" src="../lib/jquery.floatinghands.js"></script>
     <script type="text/javascript">
     $(function () {
-      daily = function (timeFn) {
+      var daily = function (timeFn) {
         now = timeFn();
         day = now.getDate();
         dayAngle = 360 / 31;
         return day * dayAngle;
       };
-      hourly = function (timeFn) {
+      var hourly = function (timeFn) {
         now = timeFn();
         hour = now.getHours() % 12;
         return hour / 12 * 360;
       };
-      minutely = function (timeFn) {
+      var minutely = function (timeFn) {
         now = timeFn();
         second = now.getMinutes();
         return second / 60 * 360;
       };
-      secondly = function (timeFn) {
+      var secondly = function (timeFn) {
         now = timeFn();
         second = now.getSeconds();
         return second / 60 * 360;
       };
+      var pusher = new ($().floatinghands().Pusher)();
+      console.log(pusher);
       $("#widget").floatinghands().attach([
         {image: "case.png", z: 10},
         {image: "date_disk.png", z: 9, x: 142, y: 213, regX: 142, regY: 213, fn: daily},
@@ -37,8 +39,8 @@
         {image: "min.png", z: 7, x: 142, y: 213, regX: 142, regY: 213, fn: minutely},
         {image: "sec.png", z: 7, x: 103, y: 213, regX: 103, regY: 213, fn: secondly},
        ], [
-        {normal: "pusher_a_0.png", pressed: "pusher_a_1.png", hotspot: [207, 140, 260, 200]},
-        {normal: "pusher_b_0.png", pressed: "pusher_b_1.png", hotspot: [207, 250, 260, 290]},
+        {normal: "pusher_a_0.png", pressed: "pusher_a_1.png", hotspot: [207, 140, 260, 200], pushed: pusher.toggleRun},
+        {normal: "pusher_b_0.png", pressed: "pusher_b_1.png", hotspot: [207, 250, 260, 290], pushed: pusher.toggleFreeze},
         {normal: "pusher_c_0.png", pressed: "pusher_c_1.png", hotspot: [40, 150, 80, 190]},
        ]);
     });
