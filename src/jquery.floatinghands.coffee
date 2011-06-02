@@ -92,7 +92,13 @@
         return obj
 
   # define the plugin callback for jQuery
-  jQuery.fn.floatinghands = (layers, pusher) ->
+  jQuery.fn.floatinghands = ->
+    console.log this
+    attach: => attach.apply(this, arguments)
+
+  attach = (layers, pusher) ->
+    console.log this
+
     # bail out early if the browser does not support canvas
     if !Modernizr.canvas
       return this

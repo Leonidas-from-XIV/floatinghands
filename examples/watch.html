@@ -29,7 +29,7 @@
         second = now.getSeconds();
         return second / 60 * 360;
       };
-      $("#widget").floatinghands([
+      $("#widget").floatinghands().attach([
         {image: "case.png", z: 10},
         {image: "date_disk.png", z: 9, x: 142, y: 213, regX: 142, regY: 213, fn: daily},
         {image: "dial.png", z: 8},
