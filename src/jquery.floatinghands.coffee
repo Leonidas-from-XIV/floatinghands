@@ -33,7 +33,7 @@
 
     if layer.fn?
       bitmap.updateFn = layer.fn
-      # hardcoded
+      # if not specified differently, use `now` as time source
       bitmap.timeFn = now
       delete layer.fn
       # add the bitmap to the Ticker so it recalculates every tick
@@ -95,11 +95,18 @@
   class Pusher
     constructor: ->
       @running = false
-      @freezed = false
-    toggleFreeze: ->
+      current = new Date()
+      @counter = new Date(current.getYear(), current.getMonth(), current.getDay(),
+        0, 0, 0, 0)
+    toggleFreeze: =>
       console.log "toggling freeze"
-    toggleRun: ->
-      console.log "toggling run"
+    toggleRun: =>
+      if !@running
+        console.log "starting counter"
+    timeFn: =>
+      # TODO logic
+      console.log "calling timeFn", this
+      @counter
 
   # define the plugin callback for jQuery
   jQuery.fn.floatinghands = ->
