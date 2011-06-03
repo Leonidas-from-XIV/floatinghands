@@ -9,30 +9,30 @@
     <script type="text/javascript">
     $(function () {
       var daily = function (timeFn) {
-        now = timeFn();
-        day = now.getDate();
-        dayAngle = 360 / 31;
+        var now = timeFn();
+        var day = now.getDate();
+        var dayAngle = 360 / 31;
         return day * dayAngle;
       };
       var hourly = function (timeFn) {
-        now = timeFn();
-        hour = now.getHours() % 12;
+        var now = timeFn();
+        var hour = now.getHours() % 12;
         return hour / 12 * 360;
       };
       var minutely = function (timeFn) {
-        now = timeFn();
-        second = now.getMinutes();
+        var now = timeFn();
+        var second = now.getMinutes();
         return second / 60 * 360;
       };
       var secondly = function (timeFn) {
-        now = timeFn();
-        second = now.getSeconds();
+        var now = timeFn();
+        var second = now.getSeconds();
         return second / 60 * 360;
       };
       var stop = new ($().floatinghands().Stopwatch)();
       var stopSecondly = function (timeFn) {
-	now = timeFn();
-	second = now / 1000
+	var now = timeFn();
+	var second = now / 1000
 	return second / 60 * 360;
       }
       $("#widget").floatinghands().attach([
