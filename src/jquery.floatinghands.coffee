@@ -96,15 +96,25 @@
     constructor: ->
       @running = false
       @zero = new Date()
+      @difference = 0
+
     toggleFreeze: =>
       console.log "toggling freeze"
+
     toggleRun: =>
       if !@running
         console.log "starting counter"
+        @zero = new Date()
+        @difference = 0
+
+      @running = !@running
+
     timeFn: =>
-      # TODO logic
+      if !@running
+        return @difference
+
       current = new Date()
-      current.getTime() - @zero.getTime()
+      @difference = current.getTime() - @zero.getTime()
 
   # define the plugin callback for jQuery
   jQuery.fn.floatinghands = ->
