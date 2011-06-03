@@ -95,9 +95,7 @@
   class Stopwatch
     constructor: ->
       @running = false
-      current = new Date()
-      @counter = new Date(current.getYear(), current.getMonth(), current.getDay(),
-        0, 0, 0, 0)
+      @zero = new Date()
     toggleFreeze: =>
       console.log "toggling freeze"
     toggleRun: =>
@@ -105,8 +103,8 @@
         console.log "starting counter"
     timeFn: =>
       # TODO logic
-      console.log "calling timeFn", this
-      @counter
+      current = new Date()
+      current.getTime() - @zero.getTime()
 
   # define the plugin callback for jQuery
   jQuery.fn.floatinghands = ->
