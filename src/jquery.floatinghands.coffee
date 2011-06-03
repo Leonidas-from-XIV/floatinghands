@@ -92,7 +92,7 @@
       if x1 <= x <= x2 and y1 <= y <= y2
         return obj
 
-  class Pusher
+  class Stopwatch
     constructor: ->
       @running = false
       current = new Date()
@@ -111,7 +111,7 @@
   # define the plugin callback for jQuery
   jQuery.fn.floatinghands = ->
     attach: => attach.apply(this, arguments)
-    Pusher: Pusher
+    Stopwatch: Stopwatch
 
   attach = (layers, pusher) ->
     # bail out early if the browser does not support canvas
