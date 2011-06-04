@@ -95,12 +95,17 @@
   class Stopwatch
     constructor: ->
       @running = false
+      @frozen = false
+      @frozenAt = 0
       @zero = new Date()
       @difference = 0
       @offset = 0
 
     toggleFreeze: =>
-      console.log "toggling freeze"
+      if @running
+        # save the current value as snapshot for later use
+        @frozenAt = @offset + @difference
+        @frozen = !@frozen
 
     toggleRun: =>
       if !@running
@@ -118,11 +123,19 @@
 
     timeFn: =>
       #console.log "difference", @difference, "offset", @offset
+      # if we are not running, we don't need to calculate differences
       if !@running
         return @offset + @difference
 
+      # calculate the new difference
       current = new Date()
       @difference = current.getTime() - @zero.getTime()
+
+      # if we're frozen, return the old value
+      if @frozen
+        return @frozenAt
+
+      # otherwise we return the new value
       @offset + @difference
 
   # define the plugin callback for jQuery
