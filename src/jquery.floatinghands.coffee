@@ -97,24 +97,33 @@
       @running = false
       @zero = new Date()
       @difference = 0
+      @offset = 0
 
     toggleFreeze: =>
       console.log "toggling freeze"
 
     toggleRun: =>
       if !@running
-        console.log "starting counter"
+        #console.log "stopwatch got started"
+        # started = new zero point
         @zero = new Date()
+      else
+        #console.log "stopwatch got halted"
+        # add the difference from zero to now to the offset and reset
+        # the difference
+        @offset = @offset + @difference
         @difference = 0
 
       @running = !@running
 
     timeFn: =>
+      #console.log "difference", @difference, "offset", @offset
       if !@running
-        return @difference
+        return @offset + @difference
 
       current = new Date()
       @difference = current.getTime() - @zero.getTime()
+      @offset + @difference
 
   # define the plugin callback for jQuery
   jQuery.fn.floatinghands = ->
