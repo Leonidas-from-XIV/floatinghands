@@ -160,6 +160,9 @@
     candidate.replaceWith canvas
     widget = canvas[0]
 
+    # if Explorer Canvas was loaded, run it on our newly created element
+    G_vmlCanvasManager?.initElement widget
+
     # we got a canvas, start initialization
     stage = new Stage(widget)
 
