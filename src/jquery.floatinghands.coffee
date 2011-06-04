@@ -31,18 +31,18 @@
       # Z is default to 10, so it stays in the back
       layer.z = 10
 
-    if layer.fn?
-      bitmap.updateFn = layer.fn
+    # apply all options that were passed
+    bitmap[key] = value for own key, value of layer
+
+    if bitmap.updateFn?
       # if not specified differently, use `now` as time source
-      bitmap.timeFn = now
-      delete layer.fn
+      if !bitmap.timeFn?
+        bitmap.timeFn = now
       # add the bitmap to the Ticker so it recalculates every tick
       recalculateRotation =
         tick: onUpdate(bitmap)
       Ticker.addListener recalculateRotation
 
-    # apply all options that were passed
-    bitmap[key] = value for own key, value of layer
     # deactivate mouse events on layers, because they are not clickable
     bitmap.mouseEnabled = false
     # put the object on the stage, thus making it visible

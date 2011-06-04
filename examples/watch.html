@@ -37,12 +37,12 @@
       }
       $("#widget").floatinghands().attach([
         {image: "case.png", z: 10},
-        {image: "date_disk.png", z: 9, x: 142, y: 213, regX: 142, regY: 213, fn: daily},
+        {image: "date_disk.png", z: 9, x: 142, y: 213, regX: 142, regY: 213, updateFn: daily},
         {image: "dial.png", z: 8},
-        {image: "hour.png", z: 7, x: 142, y: 213, regX: 142, regY: 213, fn: hourly},
-        {image: "min.png", z: 7, x: 142, y: 213, regX: 142, regY: 213, fn: minutely},
-        {image: "sec.png", z: 7, x: 103, y: 213, regX: 103, regY: 213, fn: secondly},
-        {image: "stop_sec.png", z: 7, x: 142, y: 213, regX: 142, regY: 213, fn: stopSecondly, timeFn: stop.timeFn},
+        {image: "hour.png", z: 7, x: 142, y: 213, regX: 142, regY: 213, updateFn: hourly},
+        {image: "min.png", z: 7, x: 142, y: 213, regX: 142, regY: 213, updateFn: minutely},
+        {image: "sec.png", z: 7, x: 103, y: 213, regX: 103, regY: 213, updateFn: secondly},
+        {image: "stop_sec.png", z: 7, x: 142, y: 213, regX: 142, regY: 213, updateFn: stopSecondly, timeFn: stop.timeFn},
        ], [
         {normal: "pusher_a_0.png", pressed: "pusher_a_1.png", hotspot: [207, 140, 260, 200], pushed: stop.toggleRun},
         {normal: "pusher_b_0.png", pressed: "pusher_b_1.png", hotspot: [207, 250, 260, 290], pushed: stop.toggleFreeze},
