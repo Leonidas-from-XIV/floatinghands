@@ -105,11 +105,11 @@
       if @running
         # save the current value as snapshot for later use
         @frozenAt = @offset + @difference
+        @frozen = !@frozen
       else
         # reset all counters
         @frozenAt = @difference = @offset = 0
-
-      @frozen = !@frozen
+        @frozen = false
 
     toggleRun: =>
       if !@running
