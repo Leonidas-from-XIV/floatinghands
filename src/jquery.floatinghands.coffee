@@ -180,7 +180,7 @@
 
     hotspots = {}
 
-    $(widget).click (event) ->
+    $(widget).mousedown (event) ->
       mouseX = event.clientX
       mouseY = event.clientY
 
@@ -188,6 +188,15 @@
       if item?
         # make the upper layer invisible
         item.visible = false
+        stage.update()
+
+    $(widget).mouseup (event) ->
+      mouseX = event.clientX
+      mouseY = event.clientY
+
+      item = objectOnPoint(hotspots, mouseX, mouseY)
+      if item?
+        item.visible = true
         # call callback if defined
         if item.pushed?
           item.pushed()
@@ -196,11 +205,6 @@
         # re-display stage immediately
         stage.update()
 
-        # schedule the visible-making
-        setTimeout(() ->
-          item.visible = true
-          stage.update()
-        50)
 
     $(widget).mousemove (event) ->
       mouseX = event.clientX
