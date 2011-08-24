@@ -96,6 +96,12 @@
       if x1 <= x <= x2 and y1 <= y <= y2
         return obj
 
+  updateElements = ->
+    stage = this
+    for element in stage.children
+      if element.updateFn?
+        onUpdate(element)()
+
   class Stopwatch
     constructor: ->
       @running = false
@@ -169,6 +175,8 @@
 
     # we got a canvas, start initialization
     stage = new Stage(widget)
+    # extend the stage with helpers
+    stage.updateElements = updateElements
 
     hotspots = {}
 
@@ -181,7 +189,10 @@
         # make the upper layer invisible
         item.visible = false
         # call callback if defined
-        item.pushed?()
+        if item.pushed?
+          item.pushed()
+          # update all elements of the canvas, so the update is visible immediately
+          stage.updateElements()
         # re-display stage immediately
         stage.update()
 
