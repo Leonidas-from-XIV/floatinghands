@@ -38,9 +38,13 @@
       # if not specified differently, use `now` as time source
       if !bitmap.timeFn?
         bitmap.timeFn = now
+      # get the specialized updater function
+      updaterFn = onUpdate(bitmap)
+      # call it once, so we start with the newest coordinates
+      updaterFn()
       # add the bitmap to the Ticker so it recalculates every tick
       recalculateRotation =
-        tick: onUpdate(bitmap)
+        tick: updaterFn
       Ticker.addListener recalculateRotation
 
     # deactivate mouse events on layers, because they are not clickable
