@@ -33,6 +33,7 @@
         return second / 60 * 360;
       };
       var stop = new ($().floatinghands().Stopwatch)();
+      var watch = new ($().floatinghands().Watch)();
       var stopSecondly = function (timeFn) {
 	var now = timeFn();
 	var second = now / 1000
@@ -40,7 +41,7 @@
       }
       $("#widget").floatinghands().attach([
         {image: "case.png", z: 10},
-        {image: "date_disk.png", z: 9, x: 142, y: 213, regX: 142, regY: 213, updateFn: daily},
+        {image: "date_disk.png", z: 9, x: 142, y: 213, regX: 142, regY: 213, updateFn: daily, timeFn: watch.timeFn},
         {image: "dial.png", z: 8},
         {image: "hour.png", z: 7, x: 142, y: 213, regX: 142, regY: 213, updateFn: hourly},
         {image: "min.png", z: 7, x: 142, y: 213, regX: 142, regY: 213, updateFn: minutely},
@@ -49,7 +50,7 @@
        ], [
         {normal: "pusher_a_0.png", pressed: "pusher_a_1.png", hotspot: [207, 140, 260, 200], pushed: stop.toggleRun},
         {normal: "pusher_b_0.png", pressed: "pusher_b_1.png", hotspot: [207, 250, 260, 290], pushed: stop.toggleFreeze},
-        {normal: "pusher_c_0.png", pressed: "pusher_c_1.png", hotspot: [40, 150, 80, 190]},
+        {normal: "pusher_c_0.png", pressed: "pusher_c_1.png", hotspot: [40, 150, 80, 190], pushed: watch.toggleDate},
        ]);
     });
     </script>
