@@ -193,6 +193,8 @@
     stage.updateElements = updateElements
 
     hotspots = {}
+    # list of items that were punched in in the mouse handlers
+    pressedItems = []
 
     $(widget).mousedown (event) ->
       mouseX = event.clientX
@@ -200,17 +202,24 @@
 
       item = objectOnPoint(hotspots, mouseX, mouseY)
       if item?
+        # mark the item as pressed
+        pressedItems.push item
         # make the upper layer invisible
         item.visible = false
         stage.update()
 
     $(widget).mouseup (event) ->
+      # 'pop out' all hidden items
+      stageNeedsUpdating = pressedItems.length != 0
+      while pressed = pressedItems.pop()
+        pressed.visible = true
+      stage.update() if stageNeedsUpdating
+
       mouseX = event.clientX
       mouseY = event.clientY
 
       item = objectOnPoint(hotspots, mouseX, mouseY)
       if item?
-        item.visible = true
         # call callback if defined
         if item.pushed?
           item.pushed()
@@ -218,7 +227,6 @@
           stage.updateElements()
         # re-display stage immediately
         stage.update()
-
 
     $(widget).mousemove (event) ->
       mouseX = event.clientX
