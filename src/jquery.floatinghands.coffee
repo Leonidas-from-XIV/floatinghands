@@ -152,24 +152,10 @@
       # otherwise we return the new value
       @offset + @difference
 
-  class Watch
-    constructor: ->
-      @dayOffset = 0
-
-    timeFn: =>
-      c = new Date
-      new Date c.getFullYear(), c.getMonth(), c.getDay() + @dayOffset
-
-    toggleDate: =>
-      # for some curious reason the date wheel rotates backwards. don't care
-      @dayOffset -= 1
-
-
   # define the plugin callback for jQuery
   jQuery.fn.floatinghands = ->
     attach: => attach.apply(this, arguments)
     Stopwatch: Stopwatch
-    Watch: Watch
 
   attach = (layers, pusher) ->
     # bail out early if the browser does not support canvas
