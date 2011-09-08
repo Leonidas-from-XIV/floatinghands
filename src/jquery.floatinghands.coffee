@@ -202,10 +202,10 @@
 
     $(widget).mouseup (event) ->
       # 'pop out' all hidden items
-      stageNeedsUpdating = pressedItems.length != 0
-      while pressed = pressedItems.pop()
-        pressed.visible = true
-      stage.update() if stageNeedsUpdating
+      if pressedItems.length != 0
+        while pressed = pressedItems.pop()
+          pressed.visible = true
+        stage.update()
 
       mouseX = event.clientX
       mouseY = event.clientY
