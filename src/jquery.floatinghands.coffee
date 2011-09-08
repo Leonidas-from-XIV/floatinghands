@@ -188,6 +188,12 @@
 
       item = objectOnPoint(hotspots, mouseX, mouseY)
       if item?
+        # call callback if defined
+        if item.pushed?
+          item.pushed()
+          # update all elements of the canvas, so the update is visible immediately
+          stage.updateElements()
+        
         # mark the item as pressed
         pressedItems.push item
         # make the upper layer invisible
@@ -206,11 +212,6 @@
 
       item = objectOnPoint(hotspots, mouseX, mouseY)
       if item?
-        # call callback if defined
-        if item.pushed?
-          item.pushed()
-          # update all elements of the canvas, so the update is visible immediately
-          stage.updateElements()
         # re-display stage immediately
         stage.update()
 
