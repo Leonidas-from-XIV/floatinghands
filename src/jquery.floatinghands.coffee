@@ -81,9 +81,9 @@
       image = new Image
       image.src = element.normal
       images.push image
-    if element.pushed?
+    if element.pressed?
       image = new Image
-      image.src = element.pushed
+      image.src = element.pressed
       images.push image
 
     e.onload = onLoad(stage, element, hotspots) for e in images
