@@ -237,7 +237,7 @@
         stage.update()
 
     # adjust ticks / FPS at will
-    Ticker.setInterval 1000
+    Ticker.setInterval 125
     Ticker.addListener listener
 
     # return 'this' so the plugin call can be chained
