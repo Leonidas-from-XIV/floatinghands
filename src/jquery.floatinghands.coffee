@@ -183,8 +183,8 @@
     pressedItems = []
 
     $(widget).mousedown (event) ->
-      mouseX = event.clientX
-      mouseY = event.clientY
+      mouseX = event.pageX - $(widget).offset().left
+      mouseY = event.pageY - $(widget).offset().top
 
       item = objectOnPoint(hotspots, mouseX, mouseY)
       if item?
@@ -207,8 +207,8 @@
           pressed.visible = true
         stage.update()
 
-      mouseX = event.clientX
-      mouseY = event.clientY
+      mouseX = event.pageX - $(widget).offset().left
+      mouseY = event.pageY - $(widget).offset().top
 
       item = objectOnPoint(hotspots, mouseX, mouseY)
       if item?
@@ -216,8 +216,8 @@
         stage.update()
 
     $(widget).mousemove (event) ->
-      mouseX = event.clientX
-      mouseY = event.clientY
+      mouseX = event.pageX - $(widget).offset().left
+      mouseY = event.pageY - $(widget).offset().top
       #console.log mouseX, mouseY
 
       item = objectOnPoint(hotspots, mouseX, mouseY)
