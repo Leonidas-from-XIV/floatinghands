@@ -164,9 +164,11 @@
 
     # get the <img> and harvest it for width and height and replace by canvas
     candidate = $(this[0])
-    width = candidate.attr 'width'
-    height = candidate.attr 'height'
-    canvas = $('<canvas>').attr('width', width).attr('height', height)
+    width = candidate.width()
+    height = candidate.height()
+    # we set the attribute on the element and not using jquery, because
+    # it needs to be an attribute and not CSS
+    canvas = $('<canvas>').width('width', width).attr('height', height)
     candidate.replaceWith canvas
     widget = canvas[0]
 
@@ -193,7 +195,7 @@
           item.pushed()
           # update all elements of the canvas, so the update is visible immediately
           stage.updateElements()
-        
+
         # mark the item as pressed
         pressedItems.push item
         # make the upper layer invisible
