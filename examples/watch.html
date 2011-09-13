@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Example</title>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
     <!--[if lt IE 9]>
@@ -10,64 +11,161 @@
     <script type="text/javascript" src="../lib/EaselJS/lib/easel.js"></script>
     <script type="text/javascript" src="../lib/jquery.floatinghands.js"></script>
     <script type="text/javascript">
+    
+    /* ********************************************************************
+    this part should be in a JS file that can be used by several different pages
+    or even into the library 
+    *********************************************************************** */
+    
+    var todayTimeFn = function() {
+      /* a function that provides the number of milliseconds passed since 
+      TODAY midnight (rather than 1970/01/01 midnight). For that, we subtract 
+      create a date that is today 0:00 and subtract it from the current date. */
+      var now = new Date();
+      return now.getTime() - 
+          new Date(now.getFullYear(), now.getMonth(), now.getDay()).getTime();
+    }
+    
+    var makeTimeFn = function(args) {
+      /* this is a function that can return a timeFunction based on certain
+      arguments passed.
+      'total' means the number of milliseconds that is represented by a full 
+            rotation of a hand. 
+      'step' means how often a hand is supposed to be updated. */
+      return function(timeFn) {
+        return ((Math.floor(timeFn() / args.step) * args.step) % args.total) / 
+            args.total * 360;
+      };
+    };
+    
+    var hours = makeTimeFn({ total: 43200000, step: 60000 });
+    var minutes = makeTimeFn({ total: 3600000, step: 1000 });
+    var minutes_30 = makeTimeFn({ total: 1800000, step: 1000 });
+    var seconds = makeTimeFn({ total: 60000, step: 1000 });
+    var seconds_mechanical = makeTimeFn({ total: 60000, step: 125 });
+    
+    var chronograph = function() {
+      /* sort of a comfort function that returns a stopwatch object so 
+      it doesn't look that verbose in the watch configuration section */
+      return new ($().floatinghands().Stopwatch)();
+    };
+    
+    var simpleDate = function () {
+      this.time = new Date();
+      var self = this;
+      
+      this.timeFn = function() {
+        return self.time;
+      }
+      this.dateCorrect = function() {
+        self.time.setDate(self.time.getDate() + 1);
+      }
+    };
+    
+    var simple_date = function(timeFn) {
+      /* I have the minus in front of the term because the true date disk
+      rotates counter-clockwise, and I subtract 28 because we have 28 as the 
+      standard date in most photographs. */
+      return -(timeFn().getDate() - 28) / 31 * 360;
+    };
+    
+    var makeHandFn = function(width, height, dpi) {
+      return function(args) {
+        var result = args;
+        var x = args.x || 0;
+        var y = args.y || 0;
+        x = x / 25.4 * dpi + width / 2;
+        y = y / 25.4 * dpi + height / 2;
+        result.x = x;
+        result.y = y;
+        result.regX = x;
+        result.regY = y;
+        
+        return result;
+      };
+    };
+    
+    var makePusherFn = function(width, height, dpi, hotspotMinSize) {
+      return function(args) {
+        var x, y, sx, sy;
+        
+        if (!(typeof args.hour == "undefined")) {
+          /* for convenience we provide the angle as an hour value (0h - 12h). 
+          hours start at the North position (top) and count clockwise, whereas
+          a mathematical angle starts at the East position (right) and counts 
+          counter-clockwise. So we start with 1/4 circle (0.25) and subtract 
+          the hour value divided by 12. */
+          var angle = (0.25 - args.hour / 12) * 2 * Math.PI;
+          x = width / 2 + args.dist * Math.cos(angle) / 25.4 * dpi;
+          y = height / 2 - args.dist * Math.sin(angle) / 25.4 * dpi;
+        } else {
+          x = args.x / 25.4 * dpi + width / 2;
+          y = args.y / 25.4 * dpi + height / 2;
+        }
+        sx = args.width / 25.4 * dpi;
+        sy = args.height / 25.4 * dpi;
+        
+        if (sx < hotspotMinSize) {
+          sx = hotspotMinSize;
+        }
+        if (sy < hotspotMinSize) {
+          sy = hotspotMinSize;
+        }
+        args.hotspot = [x - sx/2, y - sy/2, x + sx/2, y + sy/2];
+        return args;
+      };
+    };
+    
+    /* ***********************************************************************
+    this part should be in a JS file that is packed together with the other 
+    files that belong to a certain watch model, i.e. the images
+    ************************************************************************ */
+    
+    // this is specific for watch images at a certain resolution
+    var WIDTH = 284; //px
+    var HEIGHT = 426; //px
+    var DPI = 120;
+    var h = makeHandFn(WIDTH, HEIGHT, DPI);
+    
+    /* we define the true 'hotspot' sizes of the watch model in mm, but
+    we can override them with a certain min size in pixels so that people 
+    will hit them. So actually if it was only for small displays we could 
+    omit the true size. */
+    var HOTSPOT_MIN_SIZE = 40; //px
+    var p = makePusherFn(WIDTH, HEIGHT, DPI, HOTSPOT_MIN_SIZE);
+    
+    // this would work for a watch model independently of the image resolution
+    var date = new simpleDate();
+    var stop = chronograph();
+    
+    var watch = {
+        date: new simpleDate(), 
+        stop: chronograph(), 
+        layers : [
+          h({image: "case.png", z: 10}),
+          h({image: "date_disk.png", z: 9, updateFn: simple_date, timeFn: date.timeFn}),
+          h({image: "dial.png", z: 8}),
+          h({image: "hour.png", z: 6, updateFn: hours, timeFn: todayTimeFn}),
+          h({image: "min.png", z: 6, updateFn: minutes, timeFn: todayTimeFn}),
+          h({image: "sec.png", z: 7, x: -8.2, updateFn: seconds_mechanical, timeFn: todayTimeFn}),
+          h({image: "stop_sec.png", z: 6, updateFn: seconds_mechanical, timeFn: stop.timeFn}),
+          h({image: "stop_min.png", z: 7, x: 8.2, updateFn: minutes_30, timeFn: stop.timeFn}),
+          h({image: "stop_hour.png", z: 7, y: 8, updateFn: hours, timeFn: stop.timeFn}),
+          h({image: "crown_0.png", z: 6}),
+         ], pushers : [
+          p({normal: "pusher_a_0.png", pressed: "pusher_a_1.png", dist: 21.5, hour: 2, width: 5, height: 5, pushed: stop.toggleRun}),
+          p({normal: "pusher_b_0.png", pressed: "pusher_b_1.png", dist: 21.5, hour: 4, width: 5, height: 5, pushed: stop.toggleFreeze}),
+          p({normal: "pusher_c_0.png", pressed: "pusher_c_1.png", dist: 21.5, hour: 10, width: 5, height: 5, pushed: date.dateCorrect}), 
+         ] }
+       
+    /* ***********************************************************************
+    this is actually the only part that should be inside the page that 
+    displays the floatinghands 
+    ************************************************************************ */
     $(function () {
-       var dayOffset = 0;
-       var daily = function (timeFn) {
-        var now = timeFn();
-        var day = now.getDate();
-        var dayAngle = 360 / 31;
-        return day * dayAngle;
-      };
-      var hourly = function (timeFn) {
-        var now = timeFn();
-        var hour = now.getHours() % 12;
-        return hour / 12 * 360;
-      };
-      var minutely = function (timeFn) {
-        var now = timeFn();
-        var second = now.getMinutes();
-        return second / 60 * 360;
-      };
-      var secondly = function (timeFn) {
-        var now = timeFn();
-        var second = now.getSeconds();
-        return second / 60 * 360;
-      };
-      var stop = new ($().floatinghands().Stopwatch)();
-      var stopSecondly = function (timeFn) {
-	var now = timeFn();
-	var second = now / 1000
-	return second / 60 * 360;
-      }
-      var watchTimeFn = function () {
-	var c = new Date();
-	return new Date(c.getFullYear(), c.getMonth(), c.getDay() + dayOffset);
-      }
-      var dateCorrect = function () {
-	dayOffset -= 1;
-      }
-      var translate = function (dpi, sideLength) {
-	return function (mm) {
-          var inches = mm / 25.4;
-          return inches * dpi + sideLength / 2;
-	};
-      }
-      var x = translate(96, $("#widget").width());
-      var y = translate(96, $("#widget").height());
-
-      $("#widget").floatinghands().attach([
-        {image: "case.png", z: 10},
-        {image: "date_disk.png", z: 9, x: 142, y: 213, regX: 142, regY: 213, updateFn: daily, timeFn: watchTimeFn},
-        {image: "dial.png", z: 8},
-        {image: "hour.png", z: 7, x: x(0), y: y(0), regX: x(0), regY: y(0), updateFn: hourly},
-        {image: "min.png", z: 7, x: x(0), y: y(0), regX: x(0), regY: y(0), updateFn: minutely},
-        {image: "sec.png", z: 7, x: 103, y: 213, regX: 103, regY: 213, updateFn: secondly},
-        {image: "stop_sec.png", z: 7, x: 142, y: 213, regX: 142, regY: 213, updateFn: stopSecondly, timeFn: stop.timeFn},
-       ], [
-        {normal: "pusher_a_0.png", pressed: "pusher_a_1.png", hotspot: [207, 140, 260, 200], pushed: stop.toggleRun},
-        {normal: "pusher_b_0.png", pressed: "pusher_b_1.png", hotspot: [207, 250, 260, 290], pushed: stop.toggleFreeze},
-        {normal: "pusher_c_0.png", pressed: "pusher_c_1.png", hotspot: [40, 150, 80, 190], pushed: dateCorrect},
-       ]);
+      
+      $("#widget").floatinghands().attach(watch.layers, watch.pushers);
+      
     });
     </script>
   </head>
