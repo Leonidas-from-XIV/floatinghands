@@ -169,6 +169,7 @@
     # we set the attribute on the element and not using jquery, because
     # it needs to be an attribute and not CSS
     canvas = $('<canvas>').width('width', width).attr('height', height)
+    canvas.attr('id', candidate.attr('id')) if candidate.attr('id')
     candidate.replaceWith canvas
     widget = canvas[0]
 
