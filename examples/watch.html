@@ -139,8 +139,6 @@
     var stop = chronograph();
     
     var watch = {
-        date: new simpleDate(), 
-        stop: chronograph(), 
         layers : [
           h({image: "case.png", z: 10}),
           h({image: "date_disk.png", z: 9, updateFn: simple_date, timeFn: date.timeFn}),
