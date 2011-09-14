@@ -57,36 +57,34 @@
 
   pusherLoaded = (stage, pusher, hotspots) -> (event) ->
     image = event.target
-    bitmap = new Bitmap(image)
+    bitmap = new Bitmap image
+    delete pusher.image
 
     if !pusher.z?
       # Z is default to 10, so it stays in the back
       pusher.z = 10
 
-    if pusher.hotspot?
-      hotspots[pusher.hotspot] = bitmap
-      delete pusher.hotspot
+    #if pusher.hotspot?
+    #  hotspots[pusher.hotspot] = bitmap
+    #  delete pusher.hotspot
 
     bitmap[key] = value for own key, value of pusher
     stage.addChild bitmap
     stage.sortChildren sortByZ
 
   initialize = (stage, onLoad, hotspots) -> (element) ->
-    images = []
     if element.image?
       image = new Image
       image.src = element.image
-      images.push image
+      image.onload = onLoad stage, element, hotspots
     if element.normal?
       image = new Image
-      image.src = element.normal
-      images.push image
+      image.src = element.normal.image
+      image.onload = onLoad stage, element.normal, hotspots
     if element.pressed?
       image = new Image
-      image.src = element.pressed
-      images.push image
-
-    e.onload = onLoad(stage, element, hotspots) for e in images
+      image.src = element.pressed.image
+      image.onload = onLoad stage, element.pressed, hotspots
 
   objectOnPoint = (hotspots, x, y) ->
     for key, obj of hotspots

@@ -160,10 +160,10 @@
           h({image: "crown_0.png", z: 6}),
          ],
         pushers : [
-          p({normal: "pusher_a_0.png", pressed: "pusher_a_1.png", dist: 21.5, hour: 2, width: 5, height: 5, pushed: stop.toggleRun}),
-          p({normal: "pusher_b_0.png", pressed: "pusher_b_1.png", dist: 21.5, hour: 4, width: 5, height: 5, pushed: stop.toggleFreeze}),
-          p({normal: "pusher_c_0.png", pressed: "pusher_c_1.png", dist: 21.5, hour: 10, width: 5, height: 5, pushed: date.dateCorrect}),
-         ]}
+          p({normal: {image: "pusher_a_0.png", z: 9}, pressed: {image: "pusher_a_1.png"}, dist: 21.5, hour: 2, width: 5, height: 5, pushed: stop.toggleRun}),
+          p({normal: {image: "pusher_b_0.png", z: 9}, pressed: {image: "pusher_b_1.png"}, dist: 21.5, hour: 4, width: 5, height: 5, pushed: stop.toggleFreeze}),
+          p({normal: {image: "pusher_c_0.png", z: 9}, pressed: {image: "pusher_c_1.png"}, dist: 21.5, hour: 10, width: 5, height: 5, pushed: date.dateCorrect}),
+         ]};
 
     /*
      * this is actually the only part that should be inside the page that
