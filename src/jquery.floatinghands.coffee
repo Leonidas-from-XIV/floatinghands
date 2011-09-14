@@ -82,8 +82,18 @@
 
   initButton = (stage) -> (element) ->
     callback = element.pushed
+    [x1, y1, x2, y2] = element.hotspot
     button = $ '<button>'
     button.click callback
+    button.css
+      left: x1
+      top: y1
+      width: x2 - x1
+      height: y2 - y1
+      border: 'none'
+      outline: 'none'
+      cursor: 'pointer'
+    # TODO: create a wrapping div or something
     $(stage.canvas).before button
 
   objectOnPoint = (hotspots, x, y) ->
