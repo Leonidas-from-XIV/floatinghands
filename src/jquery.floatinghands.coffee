@@ -22,7 +22,7 @@
   now = ->
     new Date
 
-  layerLoaded = (stage, layer, hotspots) -> (event) ->
+  layerLoaded = (stage, layer) -> (event) ->
     image = event.target
     bitmap = new Bitmap(image)
     delete layer.image
@@ -55,7 +55,7 @@
     # will be determined by the time the image is loaded
     stage.sortChildren sortByZ
 
-  pusherLoaded = (stage, pusher, hotspots) -> (event) ->
+  pusherLoaded = (stage, pusher) -> (event) ->
     image = event.target
     bitmap = new Bitmap image
     delete pusher.image
@@ -68,19 +68,19 @@
     stage.addChild bitmap
     stage.sortChildren sortByZ
 
-  initialize = (stage, onLoad, hotspots) -> (element) ->
+  initialize = (stage, onLoad) -> (element) ->
     if element.image?
       image = new Image
       image.src = element.image
-      image.onload = onLoad stage, element, hotspots
+      image.onload = onLoad stage, element
     if element.normal?
       image = new Image
       image.src = element.normal.image
-      image.onload = onLoad stage, element.normal, hotspots
+      image.onload = onLoad stage, element.normal
     if element.pressed?
       image = new Image
       image.src = element.pressed.image
-      image.onload = onLoad stage, element.pressed, hotspots
+      image.onload = onLoad stage, element.pressed
 
   initButton = (stage) -> (element) ->
     callback = element.pushed
@@ -232,9 +232,9 @@
 
     # add all images to the stage
     initButton(stage) element for element in pusher
-    initLayer = initialize stage, layerLoaded, hotspots
+    initLayer = initialize stage, layerLoaded
     initLayer element for element in layers
-    initPusher = initialize stage, pusherLoaded, hotspots
+    initPusher = initialize stage, pusherLoaded
     initPusher element for element in pusher
 
     # create an object so addListener has something to call on.
