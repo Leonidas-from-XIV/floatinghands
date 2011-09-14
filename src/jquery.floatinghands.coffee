@@ -9,7 +9,7 @@
   onUpdate = (bitmap) -> ->
     # calculate the degree by passing the function to the degree calculator
     # function and set this degree
-    bitmap.rotation = bitmap.updateFn(bitmap.timeFn)
+    bitmap.rotation = bitmap.updateFn bitmap.timeFn
     # return `true` so it will be called again
     true
 
@@ -24,7 +24,7 @@
 
   layerLoaded = (stage, layer) -> (event) ->
     image = event.target
-    bitmap = new Bitmap(image)
+    bitmap = new Bitmap image
     delete layer.image
 
     if !layer.z?
@@ -39,13 +39,11 @@
       if !bitmap.timeFn?
         bitmap.timeFn = now
       # get the specialized updater function
-      updaterFn = onUpdate(bitmap)
+      updaterFn = onUpdate bitmap
       # call it once, so we start with the newest coordinates
       updaterFn()
       # add the bitmap to the Ticker so it recalculates every tick
-      recalculateRotation =
-        tick: updaterFn
-      Ticker.addListener recalculateRotation
+      Ticker.addListener tick: updaterFn
 
     # deactivate mouse events on layers, because they are not clickable
     bitmap.mouseEnabled = false
@@ -87,7 +85,6 @@
     button = $ '<button>'
     button.click callback
     $(stage.canvas).before button
-
 
   objectOnPoint = (hotspots, x, y) ->
     for key, obj of hotspots
@@ -155,7 +152,7 @@
 
   # define the plugin callback for jQuery
   jQuery.fn.floatinghands = ->
-    attach: => attach.apply(this, arguments)
+    attach: => attach.apply this, arguments
     Stopwatch: Stopwatch
 
   attach = (layers, pusher) ->
@@ -164,7 +161,7 @@
       return this
 
     # get the <img> and harvest it for width and height and replace by canvas
-    candidate = $(this[0])
+    candidate = $ this[0]
     width = candidate.width()
     height = candidate.height()
     # we set the attribute on the element and not using jquery, because
@@ -178,7 +175,7 @@
     G_vmlCanvasManager?.initElement widget
 
     # we got a canvas, start initialization
-    stage = new Stage(widget)
+    stage = new Stage widget
     # extend the stage with helpers
     stage.updateElements = updateElements
 
@@ -190,7 +187,7 @@
       mouseX = event.pageX - $(widget).offset().left
       mouseY = event.pageY - $(widget).offset().top
 
-      item = objectOnPoint(hotspots, mouseX, mouseY)
+      item = objectOnPoint hotspots, mouseX, mouseY
       if item?
         # call callback if defined
         if item.pushed?
@@ -214,7 +211,7 @@
       mouseX = event.pageX - $(widget).offset().left
       mouseY = event.pageY - $(widget).offset().top
 
-      item = objectOnPoint(hotspots, mouseX, mouseY)
+      item = objectOnPoint hotspots, mouseX, mouseY
       if item?
         # re-display stage immediately
         stage.update()
@@ -224,11 +221,8 @@
       mouseY = event.pageY - $(widget).offset().top
       #console.log mouseX, mouseY
 
-      item = objectOnPoint(hotspots, mouseX, mouseY)
-      style = 'auto'
-      if item?
-        style = 'pointer'
-      $(this).css('cursor', style)
+      item = objectOnPoint hotspots, mouseX, mouseY
+      $(this).css 'cursor', if item? then 'pointer' else 'auto'
 
     # add all images to the stage
     initButton(stage) element for element in pusher
@@ -237,14 +231,9 @@
     initPusher = initialize stage, pusherLoaded
     initPusher element for element in pusher
 
-    # create an object so addListener has something to call on.
-    listener =
-      tick: () ->
-        stage.update()
-
     # adjust ticks / FPS at will
     Ticker.setInterval 125
-    Ticker.addListener listener
+    Ticker.addListener tick: -> stage.update()
 
     # return 'this' so the plugin call can be chained
     this
