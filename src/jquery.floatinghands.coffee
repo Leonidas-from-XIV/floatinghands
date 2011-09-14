@@ -64,10 +64,6 @@
       # Z is default to 10, so it stays in the back
       pusher.z = 10
 
-    #if pusher.hotspot?
-    #  hotspots[pusher.hotspot] = bitmap
-    #  delete pusher.hotspot
-
     bitmap[key] = value for own key, value of pusher
     stage.addChild bitmap
     stage.sortChildren sortByZ
@@ -85,6 +81,13 @@
       image = new Image
       image.src = element.pressed.image
       image.onload = onLoad stage, element.pressed, hotspots
+
+  initButton = (stage) -> (element) ->
+    callback = element.pushed
+    button = $ '<button>'
+    button.click callback
+    $(stage.canvas).before button
+
 
   objectOnPoint = (hotspots, x, y) ->
     for key, obj of hotspots
@@ -228,6 +231,7 @@
       $(this).css('cursor', style)
 
     # add all images to the stage
+    initButton(stage) element for element in pusher
     initLayer = initialize stage, layerLoaded, hotspots
     initLayer element for element in layers
     initPusher = initialize stage, pusherLoaded, hotspots
