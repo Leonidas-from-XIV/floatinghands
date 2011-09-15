@@ -53,38 +53,40 @@
     # will be determined by the time the image is loaded
     stage.sortChildren sortByZ
 
-  pusherLoaded = (stage, pusher) -> (event) ->
+  pusherLoaded = (stage, layer, extra) -> (event) ->
     image = event.target
     bitmap = new Bitmap image
-    delete pusher.image
+    delete layer.image
 
-    if !pusher.z?
+    if !layer.z?
       # Z is default to 10, so it stays in the back
-      pusher.z = 10
+      layer.z = 10
 
-    bitmap[key] = value for own key, value of pusher
+    bitmap[key] = value for own key, value of layer
+
+    if extra.button?
+      extra.button.data(extra.type, bitmap)
+
     stage.addChild bitmap
     stage.sortChildren sortByZ
 
   initialize = (stage, onLoad) -> (element) ->
-    if element.image?
-      image = new Image
-      image.src = element.image
-      image.onload = onLoad stage, element
-    if element.normal?
-      image = new Image
-      image.src = element.normal.image
-      image.onload = onLoad stage, element.normal
-    if element.pressed?
-      image = new Image
-      image.src = element.pressed.image
-      image.onload = onLoad stage, element.pressed
+    image = new Image
+    image.src = element.image
+    image.onload = onLoad stage, element
 
   initButton = (stage) -> (element) ->
     callback = element.pushed
     [x1, y1, x2, y2] = element.hotspot
     button = $ '<button>'
-    button.click callback
+    button.mousedown (event) ->
+      button.data('normal').visible = false
+      stage.update()
+      callback event
+    button.mouseup (event) ->
+      button.data('normal').visible = true
+      stage.update()
+
     button.css
       display: 'block'
       position: 'absolute'
@@ -97,6 +99,15 @@
       cursor: 'pointer'
       background: 'rgba(0, 0, 0, 0)'
     $(stage.canvas).after button
+
+    if element.normal?
+      image = new Image
+      image.src = element.normal.image
+      image.onload = pusherLoaded stage, element.normal, button: button, type: 'normal'
+    if element.pressed?
+      image = new Image
+      image.src = element.pressed.image
+      image.onload = pusherLoaded stage, element.pressed, button: button, type: 'pressed'
 
   updateElements = ->
     stage = this
@@ -187,8 +198,6 @@
     initButton(stage) element for element in pusher
     initLayer = initialize stage, layerLoaded
     initLayer element for element in layers
-    initPusher = initialize stage, pusherLoaded
-    initPusher element for element in pusher
 
     # adjust ticks / FPS at will
     Ticker.setInterval 125
