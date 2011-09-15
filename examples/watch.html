@@ -17,17 +17,6 @@
      * or even into the library
      */
 
-    var todayTimeFn = function() {
-      /*
-       * a function that provides the number of milliseconds passed since
-       * TODAY midnight (rather than 1970/01/01 midnight). For that, we subtract
-       * create a date that is today 0:00 and subtract it from the current date.
-       */
-      var now = new Date();
-      return now.getTime() -
-          new Date(now.getFullYear(), now.getMonth(), now.getDay()).getTime();
-    }
-
     var makeTimeFn = function(args) {
       /*
        * this is a function that can return a timeFunction based on certain
@@ -151,9 +140,9 @@
           h({image: "case.png", z: 10}),
           h({image: "date_disk.png", z: 9, updateFn: simple_date, timeFn: date.timeFn}),
           h({image: "dial.png", z: 8}),
-          h({image: "hour.png", z: 6, updateFn: hours, timeFn: todayTimeFn}),
-          h({image: "min.png", z: 6, updateFn: minutes, timeFn: todayTimeFn}),
-          h({image: "sec.png", z: 7, x: -8.2, updateFn: seconds_mechanical, timeFn: todayTimeFn}),
+          h({image: "hour.png", z: 6, updateFn: hours}),
+          h({image: "min.png", z: 6, updateFn: minutes}),
+          h({image: "sec.png", z: 7, x: -8.2, updateFn: seconds_mechanical}),
           h({image: "stop_sec.png", z: 6, updateFn: seconds_mechanical, timeFn: stop.timeFn}),
           h({image: "stop_min.png", z: 7, x: 8.2, updateFn: minutes_30, timeFn: stop.timeFn}),
           h({image: "stop_hour.png", z: 7, y: 8, updateFn: hours, timeFn: stop.timeFn}),

@@ -1,6 +1,10 @@
-# *jQuery Floating Hands Plugin*
-#
-# Written in 2011 by Marek Kubica <marek@xivilization.net>.
+###
+*jQuery Floating Hands Plugin*
+
+Written in 2011 by Marek Kubica <marek@xivilization.net>.
+
+See https://github.com/Leonidas-from-XIV/floatinghands for details.
+###
 
 # define the wrapper function for jQuery
 (($) ->
@@ -18,9 +22,14 @@
   sortByZ = (first, second) ->
     second.z - first.z
 
-  # TODO find a better way to solve this
+  ###
+  a function that provides the number of milliseconds passed since
+  midnight today (rather than 1970/01/01 midnight). For that, we subtract
+  create a date that is today 0:00 and subtract it from the current date.
+  ###
   now = ->
-    new Date
+    atm = new Date()
+    atm.getTime() - new Date(atm.getFullYear(), atm.getMonth(), atm.getDay()).getTime()
 
   layerLoaded = (stage, layer) -> (event) ->
     image = event.target
