@@ -98,14 +98,6 @@
       background: 'rgba(0, 0, 0, 0)'
     $(stage.canvas).after button
 
-  objectOnPoint = (hotspots, x, y) ->
-    for key, obj of hotspots
-      # need to convert these out of a string, because JS dictionaries are a joke
-      [x1, y1, x2, y2] = (parseInt(n, 10) for n in key.split(','))
-
-      if x1 <= x <= x2 and y1 <= y <= y2
-        return obj
-
   updateElements = ->
     stage = this
     for element in stage.children
@@ -190,51 +182,6 @@
     stage = new Stage widget
     # extend the stage with helpers
     stage.updateElements = updateElements
-
-    hotspots = {}
-    # list of items that were punched in in the mouse handlers
-    pressedItems = []
-
-    $(widget).mousedown (event) ->
-      mouseX = event.pageX - $(widget).offset().left
-      mouseY = event.pageY - $(widget).offset().top
-
-      item = objectOnPoint hotspots, mouseX, mouseY
-      if item?
-        # call callback if defined
-        if item.pushed?
-          item.pushed()
-          # update all elements of the canvas, so the update is visible immediately
-          stage.updateElements()
-
-        # mark the item as pressed
-        pressedItems.push item
-        # make the upper layer invisible
-        item.visible = false
-        stage.update()
-
-    $(widget).mouseup (event) ->
-      # 'pop out' all hidden items
-      if pressedItems.length != 0
-        while pressed = pressedItems.pop()
-          pressed.visible = true
-        stage.update()
-
-      mouseX = event.pageX - $(widget).offset().left
-      mouseY = event.pageY - $(widget).offset().top
-
-      item = objectOnPoint hotspots, mouseX, mouseY
-      if item?
-        # re-display stage immediately
-        stage.update()
-
-    $(widget).mousemove (event) ->
-      mouseX = event.pageX - $(widget).offset().left
-      mouseY = event.pageY - $(widget).offset().top
-      #console.log mouseX, mouseY
-
-      item = objectOnPoint hotspots, mouseX, mouseY
-      $(this).css 'cursor', if item? then 'pointer' else 'auto'
 
     # add all images to the stage
     initButton(stage) element for element in pusher
