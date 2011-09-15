@@ -86,6 +86,8 @@
     button = $ '<button>'
     button.click callback
     button.css
+      display: 'block'
+      position: 'absolute'
       left: x1
       top: y1
       width: x2 - x1
@@ -93,6 +95,7 @@
       border: 'none'
       outline: 'none'
       cursor: 'pointer'
+      background: 'rgba(0, 0, 0, 0)'
     $(stage.canvas).after button
 
   objectOnPoint = (hotspots, x, y) ->
