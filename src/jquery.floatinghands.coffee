@@ -178,6 +178,18 @@ See https://github.com/Leonidas-from-XIV/floatinghands for details.
   jQuery.fn.floatinghands = ->
     attach: => attach.apply this, arguments
     Stopwatch: Stopwatch
+    makeTimeFn: => makeTimeFn.apply this, arguments
+
+  makeTimeFn = (args) ->
+    ###
+    this is a function that can return a timeFunction based on certain
+    arguments passed.
+    'total' means the number of milliseconds that is represented by a full
+      rotation of a hand.
+    'step' means how often a hand is supposed to be updated.
+    ###
+    (timeFn) ->
+      Math.floor(timeFn() / args.step) * args.step % args.total / args.total * 360
 
   attach = (layers, pusher) ->
     # bail out early if the browser does not support canvas

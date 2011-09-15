@@ -17,19 +17,7 @@
      * or even into the library
      */
 
-    var makeTimeFn = function(args) {
-      /*
-       * this is a function that can return a timeFunction based on certain
-       * arguments passed.
-       * 'total' means the number of milliseconds that is represented by a full
-       *   rotation of a hand.
-       * 'step' means how often a hand is supposed to be updated.
-       */
-      return function(timeFn) {
-        return ((Math.floor(timeFn() / args.step) * args.step) % args.total) /
-            args.total * 360;
-      };
-    };
+    var makeTimeFn = $().floatinghands().makeTimeFn;
 
     var hours = makeTimeFn({total: 43200000, step: 60000});
     var minutes = makeTimeFn({total: 3600000, step: 1000});
