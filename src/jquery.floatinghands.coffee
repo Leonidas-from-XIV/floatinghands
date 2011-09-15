@@ -93,8 +93,7 @@
       border: 'none'
       outline: 'none'
       cursor: 'pointer'
-    # TODO: create a wrapping div or something
-    $(stage.canvas).before button
+    $(stage.canvas).after button
 
   objectOnPoint = (hotspots, x, y) ->
     for key, obj of hotspots
@@ -175,8 +174,10 @@
     # we set the attribute on the element and not using jquery, because
     # it needs to be an attribute and not CSS
     canvas = $('<canvas>').attr width: candidate.width(), height: candidate.height()
-    (canvas.attr id: originalId) if originalId = candidate.attr 'id'
-    candidate.replaceWith canvas
+    div = $ '<div>'
+    (div.attr id: originalId) if originalId = candidate.attr 'id'
+    div.append canvas
+    candidate.replaceWith div
     widget = canvas[0]
 
     # if Explorer Canvas was loaded, run it on our newly created element
