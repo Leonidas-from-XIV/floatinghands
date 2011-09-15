@@ -172,11 +172,9 @@
 
     # get the <img> and harvest it for width and height and replace by canvas
     candidate = $ this[0]
-    width = candidate.width()
-    height = candidate.height()
     # we set the attribute on the element and not using jquery, because
     # it needs to be an attribute and not CSS
-    canvas = $('<canvas>').width('width', width).attr('height', height)
+    canvas = $('<canvas>').attr width: candidate.width(), height: candidate.height()
     canvas.attr('id', candidate.attr('id')) if candidate.attr('id')
     candidate.replaceWith canvas
     widget = canvas[0]
