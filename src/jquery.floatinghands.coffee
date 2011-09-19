@@ -124,14 +124,66 @@ See https://github.com/Leonidas-from-XIV/floatinghands for details.
       if element.updateFn?
         onUpdate(element)()
 
+  class LocalStorage
+    getLS: (key) =>
+      localStorage.getItem key
+
+    getCookie: (key) =>
+      document.cookie
+
+    get: =>
+      if Modernizr.localstorage
+        @getLS this, arguments
+      else
+        @getCookie this, arguments
+
+    setLS: (key, value) =>
+      localStorage.setItem key, value
+
+    setCookie: (key, value) =>
+      date = new Date();
+      date.setTime date.getTime() + 356 * 24 * 60 * 60 * 1000
+      expires = "; expires=" + date.toGMTString()
+      document.cookie = key + "=" + value + expires + "; path=/"
+
+    set: =>
+      if Modernizr.localStorage
+        @setLS this, arguments
+      else
+        @setCookie this, arguments
+
   class Stopwatch
-    constructor: ->
+    constructor: (slot) ->
+      @slot = slot
       @running = false
       @frozen = false
       @frozenAt = 0
       @zero = new Date()
       @difference = 0
       @offset = 0
+      @storage = new LocalStorage()
+      @loadState()
+
+    loadState: =>
+      # TODO local storage
+      val = @storage.get @slot
+      console.log val
+      @saveState()
+
+    saveState: =>
+      # TODO convert to JSON and save
+      val = JSON.stringify
+        running: @running
+        frozen: @frozen
+        frozenAt: @frozenAt
+        zero: @zero
+        difference: @difference
+        offset: @offset
+
+      console.log val
+      console.log @storage.set
+      @storage.set @slot, val
+      console.log jQuery.parseJSON val
 
     toggleFreeze: =>
       if @running

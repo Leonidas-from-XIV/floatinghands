@@ -25,11 +25,11 @@
     var seconds = makeTimeFn({total: 60000, step: 1000});
     var seconds_mechanical = makeTimeFn({total: 60000, step: 125});
 
-    var chronograph = function() {
+    var chronograph = function(slot) {
       /* sort of a comfort function that returns a stopwatch object so
        * it doesn't look that verbose in the watch configuration section
        */
-      return new ($().floatinghands().Stopwatch)();
+      return new ($().floatinghands().Stopwatch)(slot);
     };
 
     var simpleDate = function () {
@@ -121,7 +121,7 @@
 
     // this would work for a watch model independently of the image resolution
     var date = new simpleDate();
-    var stop = chronograph();
+    var stop = chronograph('simple');
 
     var watch = {
         layers : [
